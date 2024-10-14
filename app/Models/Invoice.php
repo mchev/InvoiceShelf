@@ -595,11 +595,14 @@ class Invoice extends Model implements HasMedia
             'taxes' => $taxes,
         ]);
 
+        $templatePath = storage_path('app/templates/invoice/' . $invoiceTemplate . '.blade.php');
+
         if (request()->has('preview')) {
-            return view('app.pdf.invoice.'.$invoiceTemplate);
+            return view()->file($templatePath);
         }
 
-        return PDF::loadView('app.pdf.invoice.'.$invoiceTemplate);
+        $renderedView = view()->file($templatePath)->render();
+        return PDF::loadHtml($renderedView);
     }
 
     public function getEmailAttachmentSetting()
@@ -672,7 +675,8 @@ class Invoice extends Model implements HasMedia
 
     public static function invoiceTemplates()
     {
-        $templates = Storage::disk('views')->files('/app/pdf/invoice');
+        $templates = Storage::files('/templates/invoice');
+
         $invoiceTemplates = [];
 
         foreach ($templates as $key => $template) {

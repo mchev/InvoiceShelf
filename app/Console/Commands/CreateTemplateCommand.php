@@ -4,32 +4,20 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use function Laravel\Prompts\select;
 
 class CreateTemplateCommand extends Command
 {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
     protected $signature = 'make:template {name} {--type=}';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
-    protected $description = 'Create estimate or invoice pdf template.                               ';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $description = 'Create a new PDF template for invoice or estimate';
 
     /**
      * Execute the console command.
@@ -37,26 +25,71 @@ class CreateTemplateCommand extends Command
     public function handle(): int
     {
         $templateName = $this->argument('name');
-        $type = $this->option('type');
+        $type = $this->option('type') ?? select(
+            'Create a PDF template for?',
+            ['invoice', 'estimate']
+        );
 
-        if (! $type) {
-            $type = $this->choice('Create a template for?', ['invoice', 'estimate']);
+        $templatePath = "app/templates/{$type}/{$templateName}.blade.php";
+        if (Storage::exists($templatePath)) {
+            $this->error('PDF template with given name already exists.');
+            return Command::FAILURE;
         }
 
-        if (Storage::disk('views')->exists("/app/pdf/{$type}/{$templateName}.blade.php")) {
-            $this->info('Template with given name already exists.');
+        try {
+            $this->createPdfTemplate($type, $templateName);
+            $this->copyPdfImages($type, $templateName);
 
-            return 0;
+            $path = storage_path("app/templates/{$type}/{$templateName}.blade.php");
+            $this->components->info(ucfirst($type) . " PDF template created successfully at " . $path);
+
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            $this->components->error("Failed to create PDF template: " . $e->getMessage());
+            return Command::FAILURE;
+        }
+    }
+
+    /**
+     * Create the PDF template file.
+     */
+    private function createPdfTemplate(string $type, string $templateName): void
+    {
+        $sourcePath = storage_path("app/templates/{$type}/{$type}1.blade.php");
+        $destinationPath = storage_path("app/templates/{$type}/{$templateName}.blade.php");
+        
+        $this->comment("Source path: {$sourcePath}");
+        $this->comment("Destination path: {$destinationPath}");
+
+        if (!file_exists($sourcePath)) {
+            throw new \RuntimeException("Source template file does not exist: {$sourcePath}");
         }
 
-        Storage::disk('views')->copy("/app/pdf/{$type}/{$type}1.blade.php", "/app/pdf/{$type}/{$templateName}.blade.php");
-        copy(public_path("/build/img/PDF/{$type}1.png"), public_path("/build/img/PDF/{$templateName}.png"));
-        copy(resource_path("/static/img/PDF/{$type}1.png"), resource_path("/static/img/PDF/{$templateName}.png"));
+        if (!copy($sourcePath, $destinationPath)) {
+            $error = error_get_last();
+            throw new \RuntimeException("Failed to copy template file. Error: " . ($error['message'] ?? 'Unknown error'));
+        }
 
-        $path = resource_path("views/app/pdf/{$type}/{$templateName}.blade.php");
-        $type = ucfirst($type);
-        $this->info("{$type} Template created successfully at ".$path);
+        if (!file_exists($destinationPath)) {
+            throw new \RuntimeException("Failed to verify copied template file: {$destinationPath}");
+        }
+    }
 
-        return 0;
+    /**
+     * Copy the PDF template images.
+     */
+    private function copyPdfImages(string $type, string $templateName): void
+    {
+        $sourceResource = resource_path("static/img/PDF/{$type}1.png");
+        $destinationResource = resource_path("static/img/PDF/{$templateName}.png");
+        $destinationPublic = public_path("build/img/PDF/{$templateName}.png");
+
+        $this->comment("Preview image source: {$sourceResource}");
+        $this->comment("Preview image destination: {$destinationResource}");
+        $this->comment("Preview image public: {$destinationPublic}");
+
+        if (!file_exists($sourceResource)) {
+            throw new \RuntimeException("Source resource image does not exist: {$sourceResource}");
+        }
     }
 }

@@ -1,0 +1,26 @@
+# Ignore everything in this directory
+*
+.DS_Store
+
+# Don't ignore these specific files and directories
+!.gitignore
+!estimate/
+!invoice/
+
+# Allow specific estimate files and directories
+!estimate/estimate[123].blade.php
+!estimate/partials/*
+
+# Allow specific invoice files and directories
+!invoice/invoice[123].blade.php
+!invoice/partials/*
+
+# But still ignore everything else in estimate and invoice directories
+estimate/*
+invoice/*
+
+# Except the previously allowed files and directories
+!estimate/estimate[123].blade.php
+!estimate/partials/
+!invoice/invoice[123].blade.php
+!invoice/partials/
