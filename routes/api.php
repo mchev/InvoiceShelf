@@ -59,6 +59,7 @@ use App\Http\Controllers\V1\Admin\Modules\ModuleController;
 use App\Http\Controllers\V1\Admin\Modules\ModulesController;
 use App\Http\Controllers\V1\Admin\Modules\UnzipModuleController;
 use App\Http\Controllers\V1\Admin\Modules\UploadModuleController;
+use App\Http\Controllers\V1\Admin\Template\TemplatesController;
 use App\Http\Controllers\V1\Admin\Payment\PaymentMethodsController;
 use App\Http\Controllers\V1\Admin\Payment\PaymentsController;
 use App\Http\Controllers\V1\Admin\Payment\SendPaymentController;

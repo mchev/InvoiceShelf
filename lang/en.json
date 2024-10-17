@@ -12,7 +12,8 @@
     "settings": "Settings",
     "logout": "Logout",
     "users": "Users",
-    "modules": "Modules"
+    "modules": "Modules",
+    "templates": "Templates"
   },
   "general": {
     "add_company": "Add Company",
@@ -701,6 +702,12 @@
     "no_modules_installed": "No Modules Installed Yet!",
     "disable_warning": "All the settings for this particular will be reverted.",
     "what_you_get": "What you get"
+  },
+  "templates": {
+    "title": "Templates",
+    "template": "Template",
+    "installed": "Installed",
+    "no_templates_installed": "No Templates Installed Yet!"
   },
   "users": {
     "title": "Users",

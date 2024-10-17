@@ -1,0 +1,31 @@
+{
+  "name": "invoice-shelf/payments",
+  "description": "",
+  "authors": [
+    {
+      "name": "Crater Invoice, Inc"
+    },
+    {
+      "name": "Rihards Simanovics",
+      "email": "rihards.s@griffin-web.studio"
+    }
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [],
+      "aliases": {}
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Modules\\Payments\\": "",
+      "App\\": "app/",
+      "InvoiceShelf\\": "app/"
+    }
+  },
+  "require": {
+    "stripe/stripe-php": "^7.103",
+    "paypal/paypal-checkout-sdk": "^1.0",
+    "razorpay/razorpay": "^2.8"
+  }
+}

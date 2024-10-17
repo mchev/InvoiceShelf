@@ -11,7 +11,7 @@ use App\Models\Note;
 use App\Models\Payment;
 use App\Models\RecurringInvoice;
 use App\Models\TaxType;
-
+use App\Models\Template;
 return [
 
     /*
@@ -368,6 +368,16 @@ return [
             'link' => '/admin/modules',
             'icon' => 'PuzzleIcon',
             'name' => 'Modules',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
+        [
+            'title' => 'navigation.templates',
+            'group' => 3,
+            'link' => '/admin/templates',
+            'icon' => 'DocumentIcon',
+            'name' => 'Templates',
             'owner_only' => true,
             'ability' => '',
             'model' => '',

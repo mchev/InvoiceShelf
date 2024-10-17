@@ -109,6 +109,9 @@ const Installation = () =>
 // Modules
 const ModuleIndex = () => import('@/scripts/admin/views/modules/Index.vue')
 
+// Templates
+const TemplatesIndex = () => import('@/scripts/admin/views/templates/Index.vue')
+
 const ModuleView = () => import('@/scripts/admin/views/modules/View.vue')
 const InvoicePublicPage = () =>
   import('@/scripts/components/InvoicePublicPage.vue')
@@ -472,6 +475,14 @@ export default [
         name: 'modules.index',
         meta: { isOwner: true },
         component: ModuleIndex,
+      },
+
+      // Templates
+      {
+        path: 'templates',
+        name: 'templates.index',
+        meta: { isOwner: true },
+        component: TemplatesIndex,
       },
 
       {
